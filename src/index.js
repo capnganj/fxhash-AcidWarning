@@ -11,8 +11,6 @@ import Skull from './SKULL.glb';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass';
-import { OutlinePass }from 'three/examples/jsm/postprocessing/OutlinePass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 
 
 //1) - generate fxhash features - global driving parameters
@@ -24,6 +22,7 @@ window.$fxhashData = feet;
 window.$fxhashFeatures = {
   "Palette" : feet.color.inverted ? feet.color.name + " Invert" : feet.color.name,
   //"Noise": feet.noise.tag,
+  "Pattern" : feet.pattern.shapesTag,
   "Background": feet.background.tag,
   //"Lights" : feet.lighting.invertLighting ? "Inverted" : "Palette",
   //"Align" : feet.lighting.doRotation ? "Center" : "North",
@@ -88,8 +87,8 @@ function init() {
 
   //lights
   const p1 = new THREE.DirectionalLight( );
-  p1.intensity = 0.7
-  p1.position.set( 6, 3, 6);
+  p1.intensity = 0.5
+  p1.position.set( -6, 3, 6);
   p1.castShadow = true;
   p1.shadow.mapSize.width = 2048;
   p1.shadow.mapSize.height = 2048;
@@ -115,8 +114,8 @@ function init() {
   //scene.add(p2)
 
   const invertLighting = feet.lighting.invertLighting; 
-  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.33)) : feet.interpolateFn(0.33);
-  const p4Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.66);
+  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.66);
+  const p4Col = invertLighting ? feet.interpolateFn(0.66) : feet.invertColor(feet.interpolateFn(0.66));
   const p3 = new THREE.DirectionalLight(
     new THREE.Color(p3Col.r/255, p3Col.g/255, p3Col.b/255),
     1.0
@@ -163,17 +162,6 @@ function init() {
   });
   
 
-  //shadow plane
-  const plnGeom = new THREE.PlaneGeometry(100,100);
-  plnGeom.rotateX(Math.PI/-2);
-  const plnCol = feet.lightenColor(feet.interpolateFn(0.01), 0.1);
-  const shadowMat = new THREE.ShadowMaterial({opacity:0.5})
-  const plnMesh = new THREE.Mesh(plnGeom, shadowMat);
-  plnMesh.position.y = -4;
-  plnMesh.receiveShadow = true;
-  scene.add(plnMesh)
-  
-
   //postporocessing stuff
   initPostprocessing();
   renderer.autoClear = false;
@@ -190,10 +178,9 @@ function initPostprocessing() {
   const sizer = computeCanvasSize()
   //renderrender
   const renderPass = new RenderPass( scene, camera);
-  //renderer.toneMappingExposure = Math.pow( 0.1, 4)
   //halftone
   const params = {
-    shape: 3,
+    shape: feet.pattern.shapesVal,
     radius: feet.map(fxrand(), 0, 1, 20, 40),
     rotateR: Math.PI / 4,
     rotateB: Math.PI / 6,
@@ -205,30 +192,14 @@ function initPostprocessing() {
     disable: false
   };
   const halftonePass = new HalftonePass(sizer.w, sizer.h, params)
-  const outlinePass = new OutlinePass(
-    new THREE.Vector2(sizer.w, sizer.h),
-    scene,
-    camera,
-    postprocessing.selectedObjects
-  )
-  outlinePass.edgeGlow = 2
-  outlinePass.edgeThickness = 2
-  outlinePass.edgeStrength = 2
-  const inv = feet.invertColor(feet.background.value)
-  outlinePass.visibleEdgeColor = new THREE.Color(inv.r/255, inv.g/255, inv.b/255)
-  outlinePass.overlayMaterial.blending = THREE.NormalBlending
-  const unrealPass = new UnrealBloomPass(new THREE.Vector2(sizer.w, sizer.h), 1, 0.5, 0.1)
+  
 
   const composer = new EffectComposer( renderer );
 
   //render
   composer.addPass(renderPass);
-  //outline pass
-  //composer.addPass(outlinePass)
   //halftone pass
   composer.addPass(halftonePass)
-  //unreal
-  //composer.addPass(unrealPass)
 
   postprocessing.composer = composer;
 }
@@ -293,7 +264,7 @@ function render() {
   if(previewed == false && loaded == true){
     fxpreview();
     previewed = true;
-    download();
+    //download();
   } 
 
 }

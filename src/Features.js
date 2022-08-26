@@ -22,10 +22,14 @@ class Features {
         //bool flippers for lighting and some color stuff
         this.lighting = {
             invertLighting : 0,
-            darkTops: 0,
-            doRotation: 0
         }
         this.setLighting();
+
+        this.pattern = {
+            shapesTag: "",
+            shapesVal: 1,
+        }
+        this.setPattern();
     }
 
     //map function logic from processing <3
@@ -196,27 +200,6 @@ class Features {
         }
     }
 
-    setNoise(){
-        const n = fxrand();
-        if (n < 0.29) {
-            this.noise.tag = "Hushed"
-            this.noise.value = this.map(n, 0, 1, 0.02, 0.04);
-        }
-        else if ( n < 0.59) {
-            this.noise.tag = "Quiet"
-            this.noise.value = this.map(n, 0, 1, 0.04, 0.055);
-        }
-        else if ( n < 0.89) {
-            this.noise.tag = "Loud"
-            this.noise.value = this.map(n, 0, 1, 0.05, 0.06);
-        }
-        else {
-            this.noise.tag = "Blown Out"
-            this.noise.value = this.map(n, 0, 1, 0.06, 0.08);
-        }
-        
-    }
-
     setBackground() {
         let b = fxrand();
         if (b < 0.00) {
@@ -251,22 +234,25 @@ class Features {
         }
     }
 
-    setFlowerGeometry() {
-        this.flowerGeometry.width = this.map(fxrand(), 0, 1, 180, 200)
-        this.flowerGeometry.height = this.map(fxrand(), 0, 1, 2, 5)
-        this.flowerGeometry.factor = this.map(fxrand(), 0, 1, 1.48, 1.49)
-        this.flowerGeometry.power = this.map(fxrand(), 0, 1, 1.1, 1.3)
-    }
-
     setLighting() {
         const il = fxrand()
         this.lighting.invertLighting = il < 0.34
+    }
 
-        const dt = fxrand()
-        this.lighting.darkTops = dt < 0.23
-
-        const dr = fxrand()
-        this.lighting.doRotation = dr < 0.77
+    setPattern() {
+        const p = fxrand();
+        if (p < 0.37) {
+            this.pattern.shapesTag = "Circles"
+            this.pattern.shapesVal = 1
+        } 
+        else if (p < 0.73) {
+            this.pattern.shapesTag = "Squares"
+            this.pattern.shapesVal = 4
+        }
+        else {
+            this.pattern.shapesTag = "Lines"
+            this.pattern.shapesVal = 3
+        }
     }
 
 }
