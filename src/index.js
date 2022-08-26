@@ -35,6 +35,7 @@ console.log(window.$fxhashFeatures);
 //vars related to fxhash preview call
 //previewed tracks whether preview has been called
 let previewed = false;
+let loaded = false;
 
 //from fxhash webpack boilerplate
 // these are the variables you can use as inputs to your algorithms
@@ -158,6 +159,7 @@ function init() {
     skullObj = sk;
     scene.add(sk);
     postprocessing.selectedObjects.push(skullObj)
+    loaded = true;
   });
   
 
@@ -191,8 +193,8 @@ function initPostprocessing() {
   //renderer.toneMappingExposure = Math.pow( 0.1, 4)
   //halftone
   const params = {
-    shape: 1,
-    radius: feet.map(fxrand(), 0, 1, 20, 30),
+    shape: 3,
+    radius: feet.map(fxrand(), 0, 1, 20, 40),
     rotateR: Math.PI / 4,
     rotateB: Math.PI / 6,
     rotateG: Math.PI / 8,
@@ -288,10 +290,10 @@ function render() {
 
   postprocessing.composer.render( scene, camera );
 
-  if(previewed == false && renderer.info.render.frame > 1){
+  if(previewed == false && loaded == true){
     fxpreview();
     previewed = true;
-    //download();
+    download();
   } 
 
 }
@@ -302,7 +304,7 @@ function toggleAutorotate() {
 
 function download() {
   var link = document.createElement('a');
-  link.download = 'FibonacciDos.png';
+  link.download = 'AcidWarning.png';
   link.href = document.getElementById('hashish').toDataURL()
   link.click();
 }
