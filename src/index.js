@@ -88,7 +88,7 @@ function init() {
   //lights
   const p1 = new THREE.DirectionalLight( );
   p1.intensity = 0.5
-  p1.position.set( -6, 3, 6);
+  p1.position.set( -10, 10, 10);
   p1.castShadow = true;
   p1.shadow.mapSize.width = 2048;
   p1.shadow.mapSize.height = 2048;
@@ -98,38 +98,40 @@ function init() {
   p1.shadow.camera.top = d;
   p1.shadow.camera.bottom = -d;
   p1.shadow.camera.far = 1000;
-  scene.add(p1);
+  //scene.add(p1);
 
-  const p2 = new THREE.DirectionalLight( );
-  p2.intensity = 0.3
-  p2.position.set( 9, 4, -4.5);
-  p2.castShadow = true;
-  p2.shadow.mapSize.width = 2048;
-  p2.shadow.mapSize.height = 2048;
-  p2.shadow.camera.left = -d;
-  p2.shadow.camera.right = d;
-  p2.shadow.camera.top = d;
-  p2.shadow.camera.bottom = -d;
-  p2.shadow.camera.far = 1000;
-  //scene.add(p2)
 
   const invertLighting = feet.lighting.invertLighting; 
-  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.66);
-  const p4Col = invertLighting ? feet.interpolateFn(0.66) : feet.invertColor(feet.interpolateFn(0.66));
+  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.33);
+  const p4Col = invertLighting ? feet.interpolateFn(0.33) : feet.invertColor(feet.interpolateFn(0.66));
+  const p5Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.85)) : feet.interpolateFn(0.15);
+  const p6Col = invertLighting ? feet.interpolateFn(0.15) : feet.invertColor(feet.interpolateFn(0.85));
   const p3 = new THREE.DirectionalLight(
     new THREE.Color(p3Col.r/255, p3Col.g/255, p3Col.b/255),
     1.0
   )
-  p3.position.set(1,0,0);
+  p3.position.set(10,1,10);
   const p4 = new THREE.DirectionalLight(
     new THREE.Color(p4Col.r/255, p4Col.g/255, p4Col.b/255),
     1.0
   )
-  p4.position.set(-1,0,2);
+  p4.position.set(-10,-1,10);
+  const p5 = new THREE.DirectionalLight(
+    new THREE.Color(p5Col.r/255, p5Col.g/255, p5Col.b/255),
+    1.0
+  )
+  p5.position.set(10,1,-10);
+  const p6 = new THREE.DirectionalLight(
+    new THREE.Color(p6Col.r/255, p6Col.g/255, p6Col.b/255),
+    1.0
+  )
+  p6.position.set(-10,-1,-10);
   scene.add(p3);
   scene.add(p4);
+  scene.add(p5);
+  scene.add(p6);
   
-  const amb = new THREE.AmbientLight( 0xcccccc, 0.2);
+  const amb = new THREE.AmbientLight( 0xffffff, 1.0);
   scene.add(amb);
 
 
@@ -141,7 +143,7 @@ function init() {
   controls.autoRotate= true;
   controls.autoRotateSpeed = 0.1;
   controls.maxDistance = 50;
-  controls.minDistance = 5;
+  controls.minDistance = 18;
   //controls.enableZoom = false;
   //controls.enablePan = false;
   //controls.enableRotate = false;
@@ -181,14 +183,14 @@ function initPostprocessing() {
   //halftone
   const params = {
     shape: feet.pattern.shapesVal,
-    radius: feet.map(fxrand(), 0, 1, 20, 40),
-    rotateR: Math.PI / 4,
+    radius: feet.map(fxrand(), 0, 1, 10, 30), //should respond to shape types
+    rotateR: Math.PI / 4, // all could be features...
     rotateB: Math.PI / 6,
     rotateG: Math.PI / 8,
     scatter: 0,
     blending: 0,
     blendingMode: 2,
-    greyscale: false,
+    greyscale: false, //maybe for another project!
     disable: false
   };
   const halftonePass = new HalftonePass(sizer.w, sizer.h, params)
