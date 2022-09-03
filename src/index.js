@@ -66,7 +66,7 @@ function init() {
     alpha: true
   } );
 
-  //let div float in a frame and always be a horizontal rect
+  //renderer
   let w = computeCanvasSize()
   renderer.setPixelRatio( w.w/w.h );
   renderer.setSize( w.w, w.h );
@@ -82,9 +82,19 @@ function init() {
   
   document.body.appendChild( renderer.domElement );
 
+  //camera andorbit controls
   camera = new THREE.PerspectiveCamera( 60, w.w / w.h, 0.01, 100 );
-  //camera.position.set( feet.map(fxrand(), 0, 1, -10, 10), 20, 37 );
   camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 37 );
+
+  // controls
+  controls = new OrbitControls( camera, renderer.domElement );
+  controls.target = new THREE.Vector3(0, 10, 0)
+  controls.enableDamping=true;
+  controls.dampingFactor = 0.2;
+  //controls.autoRotate= true;
+  controls.autoRotateSpeed = 1.0;
+  controls.maxDistance = 50;
+  controls.minDistance = 18;
 
   //lights
   const p1 = new THREE.DirectionalLight( );
@@ -137,16 +147,6 @@ function init() {
   const amb = new THREE.AmbientLight( 0xffffff, 0.4);
   scene.add(amb);
 
-
-  // controls
-  controls = new OrbitControls( camera, renderer.domElement );
-  controls.target = new THREE.Vector3(0, 10, 0)
-  controls.enableDamping=true;
-  controls.dampingFactor = 0.2;
-  //controls.autoRotate= true;
-  controls.autoRotateSpeed = 1.0;
-  controls.maxDistance = 50;
-  controls.minDistance = 18;
 
   //geometry!
 
@@ -274,7 +274,7 @@ function render() {
   if(previewed == false && loaded == true){
     fxpreview();
     previewed = true;
-    //download();
+    download();
   } 
 
 }
