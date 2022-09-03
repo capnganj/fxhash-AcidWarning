@@ -22,9 +22,9 @@ window.$fxhashData = feet;
 window.$fxhashFeatures = {
   "Palette" : feet.color.inverted ? feet.color.name + " Invert" : feet.color.name,
   "Scatter": feet.pattern.scatterTag,
-  //"Pattern" : feet.pattern.shapesTag,
+  "Dose Size" : feet.pattern.sizeTag,
   "Background": feet.background.tag,
-  //"Lights" : feet.lighting.invertLighting ? "Inverted" : "Palette",
+  "Pattern" : feet.pattern.anglesTag,
   //"Align" : feet.lighting.doRotation ? "Center" : "North",
   //"Tops" : feet.lighting.darkTops ? "Light" : "Dark"
 };
@@ -185,13 +185,13 @@ function initPostprocessing() {
   //halftone
   const params = {
     shape: 4, //acid hits are square!  saving circles and lines for other projects...
-    radius: feet.map(fxrand(), 0, 1, 20, 35),
-    rotateR: Math.PI / 2, // all could be features...
-    rotateB: Math.PI / 4,
-    rotateG: Math.PI / 6,
+    radius: feet.pattern.sizeVal,
+    rotateR: feet.pattern.anglesVals.r , // all could be features...
+    rotateB: feet.pattern.anglesVals.g,
+    rotateG: feet.pattern.anglesVals.b,
     scatter: feet.pattern.scatterVal,
     blending: 0,
-    blendingMode: 2,
+    blendingMode: 4,
     greyscale: false, //maybe for another project!
     disable: false
   };
@@ -214,7 +214,7 @@ function computeCanvasSize() {
   const ww = window.innerWidth;
   const wh = window.innerHeight;
 
-  const smallEdgeSize = ((ww + wh)/2) * 0.05
+  const smallEdgeSize = ((ww + wh)/2) * 0.02
 
   //return object to populate
   const ret = {}
@@ -264,8 +264,8 @@ function animate() {
 function render() {
 
   if (animateSkull) {
-	  const seconds = performance.now() / 777;
-	  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.1, 0.1)
+	  const seconds = performance.now() / 500;
+	  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.2, 0.2)
 	  skullObj.children[0].rotation.x = feet.map(Math.cos(seconds), -1, 1, (-Math.PI/2) - 0.1, (-Math.PI/2) + 0.1 )
   }
 

@@ -26,10 +26,12 @@ class Features {
         this.setLighting();
 
         this.pattern = {
-            shapesTag: "",
-            shapesVal: 1,
             scatterTag: "",
-            scatterVal: 0
+            scatterVal: 0,
+            sizeTag: "",
+            sizeVal: 10,
+            anglesTag: "",
+            anglesVals: {}
         }
         this.setPattern();
     }
@@ -160,39 +162,31 @@ class Features {
     //set color palette globally
     setColorPalette() {
         let c = fxrand();
-
-        //set palette
-
-        
-        if (c < 0.07) { //1
+        if (c < 0.09) { 
             this.color.name = "Rainbow"
         }
-        else if (c < 0.11) { //2
+        else if (c < 0.17) { 
             this.color.name = "Rdpu"
         }
-        else if (c < 0.19) { //3
-            this.color.name = "Ylgn"
-        }
-        else if (c < 0.25) {  //4
+        else if (c < 0.25) {  
             this.color.name = "Sinebow"
         }
-        else if (c < 0.32) { //5
+        else if (c < 0.32) { 
             this.color.name = "Ylgnbu"
         }
-        else if (c < 0.41) { //6
+        else if (c < 0.41) { 
             this.color.name = "Viridis" 
         }
-        else if (c < 0.55) {  //7
+        else if (c < 0.55) {  
             this.color.name = "Inferno" 
         }
-        else if (c < 0.66) {  //8
+        else if (c < 0.66) {  
             this.color.name = "Plasma" 
         }
-        else if (c < 0.78) {  //11
+        else if (c < 0.78) {  
             this.color.name = "Cool" 
         }
-        //...
-        else {  //12
+        else {  
             this.color.name = "Magma"  
         }
 
@@ -242,7 +236,8 @@ class Features {
     }
 
     setPattern() {
-        this.pattern.shapesVal = 4
+
+        //scatter
         const p = fxrand();
         if (p < 0.37) {
             this.pattern.scatterTag = "None"
@@ -255,6 +250,43 @@ class Features {
         else {
             this.pattern.scatterTag = "Scattered"
             this.pattern.scatterVal = this.map(fxrand(), 0, 1, 0.7, 1)
+        }
+
+        //size
+        const s = fxrand();
+        if (s < 0.08) {
+            this.pattern.sizeTag = "Micro"
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 15, 18)
+        }
+        else if (s < 0.83) {
+            this.pattern.sizeTag = "Standard"
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 25, 28)
+        } 
+        else {
+            this.pattern.sizeTag = "Hero"
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 32, 40)
+        }
+
+        //angles
+        const a = fxrand();
+        if (a < 0.32) {
+            this.pattern.anglesTag = "Grid"
+            this.pattern.anglesVals.r = 0
+            this.pattern.anglesVals.g = 0
+            this.pattern.anglesVals.b = 0
+        } 
+        else if (a < 0.88) {
+            this.pattern.anglesTag = "Mirror"
+            const angle = this.map(fxrand(), 0, 1, 0, Math.PI/2)
+            this.pattern.anglesVals.r = 0
+            this.pattern.anglesVals.g = angle
+            this.pattern.anglesVals.b = -angle
+        }
+        else {
+            this.pattern.anglesTag = "Random"
+            this.pattern.anglesVals.r = this.map(fxrand(), 0, 1, 0, Math.PI/2)
+            this.pattern.anglesVals.g = this.map(fxrand(), 0, 1, 0, Math.PI/2)
+            this.pattern.anglesVals.b = this.map(fxrand(), 0, 1, 0, Math.PI/2)
         }
     }
 
