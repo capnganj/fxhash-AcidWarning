@@ -34,6 +34,14 @@ class Features {
             anglesVals: {}
         }
         this.setPattern();
+
+        this.lightsAndCamera = {
+            lightsTag: "",
+            lightsVal: 0,
+            cameraTag: "",
+            cameraVal: {}
+        }
+        this.setLightsAndCamera();
     }
 
     //map function logic from processing <3
@@ -287,6 +295,60 @@ class Features {
             this.pattern.anglesVals.r = this.map(fxrand(), 0, 1, 0, Math.PI/2)
             this.pattern.anglesVals.g = this.map(fxrand(), 0, 1, 0, Math.PI/2)
             this.pattern.anglesVals.b = this.map(fxrand(), 0, 1, 0, Math.PI/2)
+        }
+    }
+
+    setLightsAndCamera() {
+        const l = fxrand();
+        if (l < 0.27) {
+            this.lightsAndCamera.lightsTag = "Left"
+            this.lightsAndCamera.lightsVal = this.map(fxrand(), 0, 1, -13, -15)
+        } 
+        else if (l < 0.59) {
+            this.lightsAndCamera.lightsTag = "Right"
+            this.lightsAndCamera.lightsVal = this.map(fxrand(), 0, 1, 13, 15)
+        }
+        else {
+            this.lightsAndCamera.lightsTag = "Top"
+            this.lightsAndCamera.lightsVal = this.map(fxrand(), 0, 1, -1, 1)
+        }
+
+        const c = fxrand()
+        if (c < 0.12) {
+            this.lightsAndCamera.cameraTag = "Front"
+            this.lightsAndCamera.cameraVal = { x: 0, y: 20 }
+        } 
+        else if (c < 0.22) {
+            this.lightsAndCamera.cameraTag = "Left"
+            this.lightsAndCamera.cameraVal = { x: -10, y: 20 }
+        }
+        else if (c < 0.33) {
+            this.lightsAndCamera.cameraTag = "Right"
+            this.lightsAndCamera.cameraVal = { x: 10, y: 20 }
+        }
+        else if (c < 0.44) {
+            this.lightsAndCamera.cameraTag = "Top"
+            this.lightsAndCamera.cameraVal = { x: 0, y: 25 }
+        }
+        else if (c < 0.59) {
+            this.lightsAndCamera.cameraTag = "Top Left"
+            this.lightsAndCamera.cameraVal = { x: -10, y: 25 }
+        }
+        else if (c < 0.75) {
+            this.lightsAndCamera.cameraTag = "Top Right"
+            this.lightsAndCamera.cameraVal = { x: 10, y: 25 }
+        }
+        else if (c < 0.9) {
+            this.lightsAndCamera.cameraTag = "Bottom"
+            this.lightsAndCamera.cameraVal = { x: 0, y: 5 }
+        }
+        else if (c < 0.96) {
+            this.lightsAndCamera.cameraTag = "Bottom Left"
+            this.lightsAndCamera.cameraVal = { x: -10, y: 5 }
+        }
+        else if (c <= 1.0) {
+            this.lightsAndCamera.cameraTag = "Bottom Right"
+            this.lightsAndCamera.cameraVal = { x: 10, y: 5 }
         }
     }
 

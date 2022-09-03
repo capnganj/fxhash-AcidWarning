@@ -25,8 +25,8 @@ window.$fxhashFeatures = {
   "Dose Size" : feet.pattern.sizeTag,
   "Background": feet.background.tag,
   "Pattern" : feet.pattern.anglesTag,
-  //"Align" : feet.lighting.doRotation ? "Center" : "North",
-  //"Tops" : feet.lighting.darkTops ? "Light" : "Dark"
+  "Sunlight" : feet.lightsAndCamera.lightsTag,
+  "Camera": feet.lightsAndCamera.cameraTag
 };
 console.log(window.$fxhashFeatures);
 //console.log(feet);
@@ -84,12 +84,12 @@ function init() {
 
   camera = new THREE.PerspectiveCamera( 60, w.w / w.h, 0.01, 100 );
   //camera.position.set( feet.map(fxrand(), 0, 1, -10, 10), 20, 37 );
-  camera.position.set( 0, 20, 37 );
+  camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 37 );
 
   //lights
   const p1 = new THREE.DirectionalLight( );
   p1.intensity = 0.6
-  p1.position.set( -15, 15, 15);
+  p1.position.set( feet.lightsAndCamera.lightsVal, 15, 15);
   p1.castShadow = true;
   p1.shadow.mapSize.width = 2048;
   p1.shadow.mapSize.height = 2048;
