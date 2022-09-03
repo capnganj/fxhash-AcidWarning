@@ -28,6 +28,8 @@ class Features {
         this.pattern = {
             shapesTag: "",
             shapesVal: 1,
+            scatterTag: "",
+            scatterVal: 0
         }
         this.setPattern();
     }
@@ -240,18 +242,19 @@ class Features {
     }
 
     setPattern() {
+        this.pattern.shapesVal = 4
         const p = fxrand();
         if (p < 0.37) {
-            this.pattern.shapesTag = "Circles"
-            this.pattern.shapesVal = 1
+            this.pattern.scatterTag = "None"
+            this.pattern.scatterVal = 0
         } 
         else if (p < 0.73) {
-            this.pattern.shapesTag = "Squares"
-            this.pattern.shapesVal = 4
+            this.pattern.scatterTag = "Choppy"
+            this.pattern.scatterVal = this.map(fxrand(), 0, 1, 0.2, 0.5)
         }
         else {
-            this.pattern.shapesTag = "Lines"
-            this.pattern.shapesVal = 3
+            this.pattern.scatterTag = "Scattered"
+            this.pattern.scatterVal = this.map(fxrand(), 0, 1, 0.7, 1)
         }
     }
 

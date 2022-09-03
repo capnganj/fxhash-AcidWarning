@@ -21,8 +21,8 @@ window.$fxhashData = feet;
 // FX Features
 window.$fxhashFeatures = {
   "Palette" : feet.color.inverted ? feet.color.name + " Invert" : feet.color.name,
-  //"Noise": feet.noise.tag,
-  "Pattern" : feet.pattern.shapesTag,
+  "Scatter": feet.pattern.scatterTag,
+  //"Pattern" : feet.pattern.shapesTag,
   "Background": feet.background.tag,
   //"Lights" : feet.lighting.invertLighting ? "Inverted" : "Palette",
   //"Align" : feet.lighting.doRotation ? "Center" : "North",
@@ -50,7 +50,7 @@ let loaded = false;
 
 
 //global vars 
-let controls, renderer, scene, camera, skullObj;
+let controls, renderer, scene, camera, skullObj, animateSkull;
 let postprocessing = {selectedObjects: []}
 init();
 
@@ -166,10 +166,14 @@ function init() {
   initPostprocessing();
   renderer.autoClear = false;
 
+  //animation controls and state
+  animateSkull = false;
+  renderer.domElement.addEventListener( 'dblclick', toggleAutorotate);
+
 
   //set up resize listener and let it rip!
   window.addEventListener( 'resize', onWindowResize );
-  renderer.domElement.addEventListener( 'dblclick', toggleAutorotate);
+  
   animate();
 }
 
@@ -180,13 +184,13 @@ function initPostprocessing() {
   const renderPass = new RenderPass( scene, camera);
   //halftone
   const params = {
-    shape: feet.pattern.shapesVal,
-    radius: feet.map(fxrand(), 0, 1, 10, 30), //should respond to shape types
+    shape: 4, //acid hits are square!  saving circles and lines for other projects...
+    radius: feet.map(fxrand(), 0, 1, 20, 35),
     rotateR: Math.PI / 2, // all could be features...
     rotateB: Math.PI / 4,
     rotateG: Math.PI / 6,
-    scatter: 0,
-    blending: 0.1,
+    scatter: feet.pattern.scatterVal,
+    blending: 0,
     blendingMode: 2,
     greyscale: false, //maybe for another project!
     disable: false
@@ -259,9 +263,11 @@ function animate() {
 
 function render() {
 
-  const seconds = performance.now() / 777;
-  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.1, 0.1)
-  skullObj.children[0].rotation.x = feet.map(Math.cos(seconds), -1, 1, (-Math.PI/2) - 0.1, (-Math.PI/2) + 0.1 )
+  if (animateSkull) {
+	  const seconds = performance.now() / 777;
+	  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.1, 0.1)
+	  skullObj.children[0].rotation.x = feet.map(Math.cos(seconds), -1, 1, (-Math.PI/2) - 0.1, (-Math.PI/2) + 0.1 )
+  }
 
   postprocessing.composer.render( scene, camera );
 
@@ -274,7 +280,8 @@ function render() {
 }
 
 function toggleAutorotate() {
-  controls.autoRotate = !controls.autoRotate;
+  //controls.autoRotate = !controls.autoRotate;
+  animateSkull = !animateSkull;
 }
 
 function download() {
