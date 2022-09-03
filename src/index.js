@@ -83,12 +83,13 @@ function init() {
   document.body.appendChild( renderer.domElement );
 
   camera = new THREE.PerspectiveCamera( 60, w.w / w.h, 0.01, 100 );
-  camera.position.set( feet.map(fxrand(), 0, 1, -10, 10), 20, 37 );
+  //camera.position.set( feet.map(fxrand(), 0, 1, -10, 10), 20, 37 );
+  camera.position.set( 0, 20, 37 );
 
   //lights
   const p1 = new THREE.DirectionalLight( );
-  p1.intensity = 0.5
-  p1.position.set( -10, 10, 10);
+  p1.intensity = 0.6
+  p1.position.set( -15, 15, 15);
   p1.castShadow = true;
   p1.shadow.mapSize.width = 2048;
   p1.shadow.mapSize.height = 2048;
@@ -98,40 +99,42 @@ function init() {
   p1.shadow.camera.top = d;
   p1.shadow.camera.bottom = -d;
   p1.shadow.camera.far = 1000;
-  //scene.add(p1);
+  scene.add(p1);
 
 
   const invertLighting = feet.lighting.invertLighting; 
-  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.33);
+  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.85)) : feet.interpolateFn(0.15);
   const p4Col = invertLighting ? feet.interpolateFn(0.33) : feet.invertColor(feet.interpolateFn(0.66));
-  const p5Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.85)) : feet.interpolateFn(0.15);
+  const p5Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.33);
   const p6Col = invertLighting ? feet.interpolateFn(0.15) : feet.invertColor(feet.interpolateFn(0.85));
+  
   const p3 = new THREE.DirectionalLight(
     new THREE.Color(p3Col.r/255, p3Col.g/255, p3Col.b/255),
-    1.0
+    0.7
   )
   p3.position.set(10,1,10);
   const p4 = new THREE.DirectionalLight(
     new THREE.Color(p4Col.r/255, p4Col.g/255, p4Col.b/255),
-    1.0
+    0.7
   )
-  p4.position.set(-10,-1,10);
+  p4.position.set(10,1,-10);
   const p5 = new THREE.DirectionalLight(
     new THREE.Color(p5Col.r/255, p5Col.g/255, p5Col.b/255),
-    1.0
+    0.7
   )
-  p5.position.set(10,1,-10);
+  p5.position.set(-10,-1,-10);
   const p6 = new THREE.DirectionalLight(
     new THREE.Color(p6Col.r/255, p6Col.g/255, p6Col.b/255),
-    1.0
+    0.7
   )
-  p6.position.set(-10,-1,-10);
+  p6.position.set(-10,-1,10);
+  
   scene.add(p3);
   scene.add(p4);
   scene.add(p5);
   scene.add(p6);
   
-  const amb = new THREE.AmbientLight( 0xffffff, 1.0);
+  const amb = new THREE.AmbientLight( 0xffffff, 0.4);
   scene.add(amb);
 
 
@@ -140,23 +143,18 @@ function init() {
   controls.target = new THREE.Vector3(0, 10, 0)
   controls.enableDamping=true;
   controls.dampingFactor = 0.2;
-  controls.autoRotate= true;
-  controls.autoRotateSpeed = 0.1;
+  //controls.autoRotate= true;
+  controls.autoRotateSpeed = 1.0;
   controls.maxDistance = 50;
   controls.minDistance = 18;
-  //controls.enableZoom = false;
-  //controls.enablePan = false;
-  //controls.enableRotate = false;
-  //controls.autoRotate= true;
-  //controls.autoRotateSpeed = -1.3;
 
   //geometry!
 
   const gltfLoader = new GLTFLoader();
   gltfLoader.load(Skull, (skull) => {
     const sk = skull.scene;
-    sk.castShadow = true;
-    sk.receiveShadow = false;
+    sk.children[0].castShadow = true;
+    sk.children[0].receiveShadow = false;
     skullObj = sk;
     scene.add(sk);
     postprocessing.selectedObjects.push(skullObj)
@@ -184,11 +182,11 @@ function initPostprocessing() {
   const params = {
     shape: feet.pattern.shapesVal,
     radius: feet.map(fxrand(), 0, 1, 10, 30), //should respond to shape types
-    rotateR: Math.PI / 4, // all could be features...
-    rotateB: Math.PI / 6,
-    rotateG: Math.PI / 8,
+    rotateR: Math.PI / 2, // all could be features...
+    rotateB: Math.PI / 4,
+    rotateG: Math.PI / 6,
     scatter: 0,
-    blending: 0,
+    blending: 0.1,
     blendingMode: 2,
     greyscale: false, //maybe for another project!
     disable: false
@@ -261,6 +259,10 @@ function animate() {
 
 function render() {
 
+  const seconds = performance.now() / 777;
+  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.1, 0.1)
+  skullObj.children[0].rotation.x = feet.map(Math.cos(seconds), -1, 1, (-Math.PI/2) - 0.1, (-Math.PI/2) + 0.1 )
+
   postprocessing.composer.render( scene, camera );
 
   if(previewed == false && loaded == true){
@@ -272,7 +274,7 @@ function render() {
 }
 
 function toggleAutorotate() {
-  controls.autoRotate= !controls.autoRotate;
+  controls.autoRotate = !controls.autoRotate;
 }
 
 function download() {

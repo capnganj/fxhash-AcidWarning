@@ -163,7 +163,7 @@ class Features {
 
         
         if (c < 0.07) { //1
-            this.color.name = "Raibow"
+            this.color.name = "Rainbow"
         }
         else if (c < 0.11) { //2
             this.color.name = "Rdpu"
