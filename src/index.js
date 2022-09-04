@@ -22,7 +22,7 @@ window.$fxhashData = feet;
 window.$fxhashFeatures = {
   "Palette" : feet.color.inverted ? feet.color.name + " Invert" : feet.color.name,
   "Scatter": feet.pattern.scatterTag,
-  "Dose Size" : feet.pattern.sizeTag,
+  "Pattern Size" : feet.pattern.sizeTag,
   "Background": feet.background.tag,
   "Pattern" : feet.pattern.anglesTag,
   "Sunlight" : feet.lightsAndCamera.lightsTag,
@@ -71,7 +71,6 @@ function init() {
   renderer.setPixelRatio( w.w/w.h );
   renderer.setSize( w.w, w.h );
   renderer.shadowMap.enabled = true;
-  //renderer.toneMapping = THREE.ReinhardToneMapping;
   renderer.domElement.id = "hashish";
   renderer.domElement.style.backgroundColor = feet.background.value
   document.body.style.backgroundColor = feet.background.value
@@ -79,19 +78,17 @@ function init() {
   document.body.style.justifyContent = 'center';
   document.body.style.alignItems = 'center'
   renderer.domElement.style.paddingTop = w.topPadding.toString() + 'px'
-  
   document.body.appendChild( renderer.domElement );
 
-  //camera andorbit controls
+  //camera and orbit controls
   camera = new THREE.PerspectiveCamera( 60, w.w / w.h, 0.01, 100 );
   camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 37 );
 
   // controls
   controls = new OrbitControls( camera, renderer.domElement );
   controls.target = new THREE.Vector3(0, 10, 0)
-  controls.enableDamping=true;
+  controls.enableDamping =true;
   controls.dampingFactor = 0.2;
-  //controls.autoRotate= true;
   controls.autoRotateSpeed = 1.0;
   controls.maxDistance = 50;
   controls.minDistance = 18;
@@ -111,12 +108,11 @@ function init() {
   p1.shadow.camera.far = 1000;
   scene.add(p1);
 
-
-  const invertLighting = feet.lighting.invertLighting; 
-  const p3Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.85)) : feet.interpolateFn(0.15);
-  const p4Col = invertLighting ? feet.interpolateFn(0.33) : feet.invertColor(feet.interpolateFn(0.66));
-  const p5Col = invertLighting ? feet.invertColor(feet.interpolateFn(0.66)) : feet.interpolateFn(0.33);
-  const p6Col = invertLighting ? feet.interpolateFn(0.15) : feet.invertColor(feet.interpolateFn(0.85));
+  //light colors
+  const p3Col = feet.interpolateFn(0.15);
+  const p4Col = feet.interpolateFn(0.66);
+  const p5Col = feet.interpolateFn(0.33);
+  const p6Col = feet.interpolateFn(0.85);
   
   const p3 = new THREE.DirectionalLight(
     new THREE.Color(p3Col.r/255, p3Col.g/255, p3Col.b/255),

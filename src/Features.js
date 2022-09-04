@@ -19,12 +19,6 @@ class Features {
         }
         this.setBackground();
 
-        //bool flippers for lighting and some color stuff
-        this.lighting = {
-            invertLighting : 0,
-        }
-        this.setLighting();
-
         this.pattern = {
             scatterTag: "",
             scatterVal: 0,
@@ -194,6 +188,9 @@ class Features {
         else if (c < 0.78) {  
             this.color.name = "Cool" 
         }
+        else if (c < 0.92) {  
+            this.color.name = "Warm" 
+        }
         else {  
             this.color.name = "Magma"  
         }
@@ -238,11 +235,6 @@ class Features {
         }
     }
 
-    setLighting() {
-        const il = fxrand()
-        this.lighting.invertLighting = il < 0.34
-    }
-
     setPattern() {
 
         //scatter
@@ -263,16 +255,16 @@ class Features {
         //size
         const s = fxrand();
         if (s < 0.08) {
-            this.pattern.sizeTag = "Micro"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 15, 18)
+            this.pattern.sizeTag = "Smaller"
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 13, 17)
         }
         else if (s < 0.83) {
             this.pattern.sizeTag = "Standard"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 25, 28)
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 22, 27)
         } 
         else {
-            this.pattern.sizeTag = "Hero"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 32, 40)
+            this.pattern.sizeTag = "Larger"
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 29, 34)
         }
 
         //angles
@@ -314,11 +306,11 @@ class Features {
         }
 
         const c = fxrand()
-        if (c < 0.12) {
+        if (c < 0.07) {
             this.lightsAndCamera.cameraTag = "Front"
             this.lightsAndCamera.cameraVal = { x: 0, y: 20 }
         } 
-        else if (c < 0.22) {
+        else if (c < 0.19) {
             this.lightsAndCamera.cameraTag = "Left"
             this.lightsAndCamera.cameraVal = { x: -10, y: 20 }
         }
@@ -338,11 +330,11 @@ class Features {
             this.lightsAndCamera.cameraTag = "Top Right"
             this.lightsAndCamera.cameraVal = { x: 10, y: 25 }
         }
-        else if (c < 0.9) {
+        else if (c < 0.82) {
             this.lightsAndCamera.cameraTag = "Bottom"
             this.lightsAndCamera.cameraVal = { x: 0, y: 5 }
         }
-        else if (c < 0.96) {
+        else if (c < 0.93) {
             this.lightsAndCamera.cameraTag = "Bottom Left"
             this.lightsAndCamera.cameraVal = { x: -10, y: 5 }
         }
