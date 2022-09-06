@@ -50,7 +50,8 @@ let loaded = false;
 
 
 //global vars 
-let controls, renderer, scene, camera, skullObj, animateSkull;
+let controls, renderer, scene, camera, skullObj, firstAnimate
+let rendererDiv, outerDiv, innerDiv;
 let postprocessing = {selectedObjects: []}
 init();
 
@@ -68,20 +69,44 @@ function init() {
 
   //renderer
   let w = computeCanvasSize()
-  renderer.setPixelRatio( w.w/w.h );
-  renderer.setSize( w.w, w.h );
+  
+  renderer.setSize( w.w-(w.nearEdgeOffset*2), (w.h-(w.nearEdgeOffset*2))/1.25);
+  renderer.setPixelRatio( window.devicePixelRatio );
   renderer.shadowMap.enabled = true;
   renderer.domElement.id = "hashish";
-  renderer.domElement.style.backgroundColor = feet.background.value
-  document.body.style.backgroundColor = feet.background.value
-  document.body.style.display = 'flex';
-  document.body.style.justifyContent = 'center';
+  //renderer.domElement.style.backgroundColor = feet.background.value
+  document.body.style.backgroundColor = 'rgb(38,38,38)'
+  document.body.style.display = 'flex'
+  document.body.style.justifyContent = 'center'
   document.body.style.alignItems = 'center'
-  renderer.domElement.style.paddingTop = w.topPadding.toString() + 'px'
-  document.body.appendChild( renderer.domElement );
+  document.body.style.height = window.innerHeight.toString() + 'px'
+
+  outerDiv = document.createElement('div')
+  outerDiv.style.backgroundColor = 'white'
+  outerDiv.style.display = 'flex'
+  outerDiv.style.justifyContent = 'center'
+  //outerDiv.style.alignItems = 'center'
+  outerDiv.style.height = w.w.toString() + 'px'
+  //outerDiv.style.add
+  document.body.appendChild(outerDiv)
+  outerDiv.id = "fxhashish"
+
+  innerDiv = document.createElement('div')
+  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
+  outerDiv.appendChild(innerDiv)
+
+  //renderer in frame
+  //renderer.domElement.style.paddingTop = w.nearEdgeOffset.toString() + 'px'
+  innerDiv.appendChild( renderer.domElement )
+  rendererDiv = renderer.domElement
+
+
+  //document.body.appendChild( renderer.domElement );
 
   //camera and orbit controls
-  camera = new THREE.PerspectiveCamera( 60, w.w / w.h, 0.01, 100 );
+  camera = new THREE.PerspectiveCamera( 60, w.w / (w.h/1.25), 0.01, 100 );
+  //camera.aspect=w.w/w.h
+  camera.updateProjectionMatrix()
   camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 37 );
 
   // controls
@@ -163,7 +188,7 @@ function init() {
   renderer.autoClear = false;
 
   //animation controls and state
-  animateSkull = false;
+  firstAnimate = false;
   renderer.domElement.addEventListener( 'dblclick', toggleAutorotate);
 
 
@@ -210,25 +235,27 @@ function computeCanvasSize() {
   const ww = window.innerWidth;
   const wh = window.innerHeight;
 
-  const smallEdgeSize = ((ww + wh)/2) * 0.02
+  let smallEdgeSize = ((ww + wh)/2) * 0.05
 
   //return object to populate
   const ret = {}
 
-  //we want to draw a horizontal golden rectangle with a border, as big as possible
+  //we want to draw a rectangle with a border, as big as possible
   //does the horizontal dimension drive, or vertical
   if ( ww/wh >= 1 ) {
     //window is wide - let height drive
-    ret.h = Math.round(wh - (smallEdgeSize * 2.5));
-    ret.w = Math.round(ret.h);
+    ret.h = Math.round(wh - (smallEdgeSize * 2));
+    ret.w = Math.round(ret.h * 1 );
   } else {
     //window is tall - let width drive
     ret.w = Math.round(ww - (smallEdgeSize * 2));
-    ret.h = Math.round(ret.w);
+    ret.h = Math.round(ret.w / 1 );
   }
 
+  smallEdgeSize = ret.w * 0.05
   
   ret.topPadding = (wh/2) - (ret.h/2)
+  ret.nearEdgeOffset = smallEdgeSize
 
   return ret;
 }
@@ -239,12 +266,15 @@ function onWindowResize() {
 
   let w = computeCanvasSize();
 
-  camera.aspect = w.w / w.h;
+  camera.aspect = w.w / (w.h/1.25);
   camera.updateProjectionMatrix();
-  renderer.setPixelRatio( w.w / w.h);
-  renderer.setSize( w.w, w.h );
+  renderer.setPixelRatio( window.devicePixelRatio);
+ 
 
-  renderer.domElement.style.paddingTop = w.topPadding.toString() + 'px'
+  document.body.style.height = window.innerHeight.toString() + 'px'
+  renderer.setSize( w.w-(w.nearEdgeOffset*2), (w.h-(w.nearEdgeOffset*2))/1.25);
+  outerDiv.style.height = w.w.toString() + 'px'
+  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
 
 }
 
@@ -259,11 +289,12 @@ function animate() {
 
 function render() {
 
-  if (animateSkull) {
-	  const seconds = performance.now() / 500;
-	  skullObj.children[0].rotation.z = feet.map(Math.cos(seconds / 4), -1, 1, -0.2, 0.2)
-	  skullObj.children[0].rotation.x = feet.map(Math.cos(seconds), -1, 1, (-Math.PI/2) - 0.1, (-Math.PI/2) + 0.1 )
+  const seconds = performance.now() / 5555 ;
+  if (seconds > 1 && !firstAnimate && !controls.autoRotate) {
+    controls.autoRotate = true;
+    firstAnimate = true
   }
+
 
   postprocessing.composer.render( scene, camera );
 
@@ -276,8 +307,7 @@ function render() {
 }
 
 function toggleAutorotate() {
-  //controls.autoRotate = !controls.autoRotate;
-  animateSkull = !animateSkull;
+  controls.autoRotate = !controls.autoRotate;
 }
 
 function download() {
