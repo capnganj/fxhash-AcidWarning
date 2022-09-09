@@ -26,7 +26,8 @@ window.$fxhashFeatures = {
   "Background": feet.background.tag,
   "Pattern" : feet.pattern.anglesTag,
   "Sunlight" : feet.lightsAndCamera.lightsTag,
-  "Camera": feet.lightsAndCamera.cameraTag
+  "Camera Position": feet.lightsAndCamera.cameraTag,
+  "Camera Zoom" : feet.lightsAndCamera.zoomTag
 };
 console.log(window.$fxhashFeatures);
 //console.log(feet);
@@ -51,7 +52,7 @@ let loaded = false;
 
 //global vars 
 let controls, renderer, scene, camera, skullObj, firstAnimate
-let rendererDiv, outerDiv, innerDiv;
+let rendererDiv, outerDiv, innerDiv, motivationalDiv
 let postprocessing = {selectedObjects: []}
 init();
 
@@ -85,9 +86,9 @@ function init() {
   outerDiv.style.backgroundColor = 'white'
   outerDiv.style.display = 'flex'
   outerDiv.style.justifyContent = 'center'
+  outerDiv.style.boxShadow = '3px 3px 15px black'
   //outerDiv.style.alignItems = 'center'
   outerDiv.style.height = w.w.toString() + 'px'
-  //outerDiv.style.add
   document.body.appendChild(outerDiv)
   outerDiv.id = "fxhashish"
 
@@ -96,22 +97,28 @@ function init() {
   outerDiv.appendChild(innerDiv)
 
   //renderer in frame
-  //renderer.domElement.style.paddingTop = w.nearEdgeOffset.toString() + 'px'
   innerDiv.appendChild( renderer.domElement )
   rendererDiv = renderer.domElement
 
-
-  //document.body.appendChild( renderer.domElement );
+  //motivational warning
+  motivationalDiv = document.createElement('h3')
+  motivationalDiv.style.display = 'flex'
+  motivationalDiv.style.justifyContent = 'center'
+  motivationalDiv.style.fontFamily = 'monospace'
+  motivationalDiv.style.textAlign = 'center'
+  motivationalDiv.style.paddingTop = (w.nearEdgeOffset/2).toString() + 'px'
+  innerDiv.appendChild(motivationalDiv)
+  motivationalDiv.innerText = "ACID WARNING\n\npsychedelics might change how you think about death"
 
   //camera and orbit controls
   camera = new THREE.PerspectiveCamera( 60, w.w / (w.h/1.25), 0.01, 100 );
   //camera.aspect=w.w/w.h
   camera.updateProjectionMatrix()
-  camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 37 );
+  camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, feet.lightsAndCamera.zoomVal );
 
   // controls
   controls = new OrbitControls( camera, renderer.domElement );
-  controls.target = new THREE.Vector3(0, 10, 0)
+  controls.target = new THREE.Vector3(0, 11, 0)
   controls.enableDamping =true;
   controls.dampingFactor = 0.2;
   controls.autoRotateSpeed = 1.0;
@@ -235,7 +242,7 @@ function computeCanvasSize() {
   const ww = window.innerWidth;
   const wh = window.innerHeight;
 
-  let smallEdgeSize = ((ww + wh)/2) * 0.05
+  let smallEdgeSize = ((ww + wh)/2) * 0.04
 
   //return object to populate
   const ret = {}

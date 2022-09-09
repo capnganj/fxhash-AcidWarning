@@ -33,7 +33,9 @@ class Features {
             lightsTag: "",
             lightsVal: 0,
             cameraTag: "",
-            cameraVal: {}
+            cameraVal: {},
+            zoomTag: "",
+            zoomVal: 0
         }
         this.setLightsAndCamera();
     }
@@ -341,6 +343,20 @@ class Features {
         else if (c <= 1.0) {
             this.lightsAndCamera.cameraTag = "Bottom Right"
             this.lightsAndCamera.cameraVal = { x: 10, y: 5 }
+        }
+
+        const z = fxrand()
+        if (z < 0.07) {
+            this.lightsAndCamera.zoomTag = "In"
+            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 17, 23)
+        } 
+        else if (z < 0.79) {
+            this.lightsAndCamera.zoomTag = "Out"
+            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 27, 32)
+        }
+        else {
+            this.lightsAndCamera.zoomTag = "Far Out"
+            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 35, 39)
         }
     }
 
