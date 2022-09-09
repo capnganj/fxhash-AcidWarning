@@ -348,7 +348,7 @@ class Features {
         const z = fxrand()
         if (z < 0.07) {
             this.lightsAndCamera.zoomTag = "In"
-            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 17, 23)
+            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 19, 23)
         } 
         else if (z < 0.79) {
             this.lightsAndCamera.zoomTag = "Out"

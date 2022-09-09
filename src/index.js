@@ -52,7 +52,7 @@ let loaded = false;
 
 //global vars 
 let controls, renderer, scene, camera, skullObj, firstAnimate
-let rendererDiv, outerDiv, innerDiv, motivationalDiv
+let rendererDiv, outerDiv, innerDiv
 let postprocessing = {selectedObjects: []}
 init();
 
@@ -71,7 +71,7 @@ function init() {
   //renderer
   let w = computeCanvasSize()
   
-  renderer.setSize( w.w-(w.nearEdgeOffset*2), (w.h-(w.nearEdgeOffset*2))/1.25);
+  renderer.setSize( w.w-(w.nearEdgeOffset*2), w.h-(w.nearEdgeOffset*2));
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.shadowMap.enabled = true;
   renderer.domElement.id = "hashish";
@@ -93,25 +93,19 @@ function init() {
   outerDiv.id = "fxhashish"
 
   innerDiv = document.createElement('div')
-  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
+  innerDiv.style.padding = (w.nearEdgeOffset*0.66).toString() + 'px'
   outerDiv.appendChild(innerDiv)
 
   //renderer in frame
+  renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
+  renderer.domElement.style.borderStyle = 'solid'
+  renderer.domElement.style.borderColor = 'rgb(150,150,150)'
+  renderer.domElement.style.borderWidth = '1px'
   innerDiv.appendChild( renderer.domElement )
   rendererDiv = renderer.domElement
 
-  //motivational warning
-  motivationalDiv = document.createElement('h3')
-  motivationalDiv.style.display = 'flex'
-  motivationalDiv.style.justifyContent = 'center'
-  motivationalDiv.style.fontFamily = 'monospace'
-  motivationalDiv.style.textAlign = 'center'
-  motivationalDiv.style.paddingTop = (w.nearEdgeOffset/2).toString() + 'px'
-  innerDiv.appendChild(motivationalDiv)
-  motivationalDiv.innerText = "ACID WARNING\n\npsychedelics might change how you think about death"
-
   //camera and orbit controls
-  camera = new THREE.PerspectiveCamera( 60, w.w / (w.h/1.25), 0.01, 100 );
+  camera = new THREE.PerspectiveCamera( 60, w.w / (w.h), 0.01, 100 );
   //camera.aspect=w.w/w.h
   camera.updateProjectionMatrix()
   camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, feet.lightsAndCamera.zoomVal );
@@ -242,7 +236,7 @@ function computeCanvasSize() {
   const ww = window.innerWidth;
   const wh = window.innerHeight;
 
-  let smallEdgeSize = ((ww + wh)/2) * 0.04
+  let smallEdgeSize = ((ww + wh)/2) * 0.02
 
   //return object to populate
   const ret = {}
@@ -273,15 +267,16 @@ function onWindowResize() {
 
   let w = computeCanvasSize();
 
-  camera.aspect = w.w / (w.h/1.25);
+  camera.aspect = w.w / (w.h);
   camera.updateProjectionMatrix();
   renderer.setPixelRatio( window.devicePixelRatio);
  
 
   document.body.style.height = window.innerHeight.toString() + 'px'
-  renderer.setSize( w.w-(w.nearEdgeOffset*2), (w.h-(w.nearEdgeOffset*2))/1.25);
+  renderer.setSize( w.w-(w.nearEdgeOffset*2), w.h-(w.nearEdgeOffset*2));
   outerDiv.style.height = w.w.toString() + 'px'
-  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
+  innerDiv.style.padding = (w.nearEdgeOffset*0.66).toString() + 'px'
+  renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
 
 }
 
