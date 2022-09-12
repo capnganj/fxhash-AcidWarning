@@ -209,11 +209,11 @@ class Features {
             this.background.tag = "Rolling Paper";
             this.background.value = rgb(235, 213, 179);
         }
-        else if (b < 0.00) {
+        else if (b < 0.28) {
             this.background.tag = "fxhash Dark";
             this.background.value = rgb(38, 38, 38);
         }
-        else if (b < 0.00) {
+        else if (b < 0.39) {
             this.background.tag = "Newspaper";
             this.background.value = rgb(245, 242, 232);
         }
@@ -221,7 +221,7 @@ class Features {
             this.background.tag = "Brown Paper Bag";
             this.background.value = rgb(181, 155, 124);
         }
-        else if (b < 0.44) {
+        else if (b < 0.64) {
             this.background.tag = "Palette Light";
             let col = this.color.inverted ? 
             this.interpolateFn(this.map(fxrand(), 0, 1, 0.66, 0.9)) : 
@@ -241,11 +241,11 @@ class Features {
 
         //scatter
         const p = fxrand();
-        if (p < 0.37) {
+        if (p < 0.13) {
             this.pattern.scatterTag = "None"
             this.pattern.scatterVal = 0
         } 
-        else if (p < 0.73) {
+        else if (p < 0.71) {
             this.pattern.scatterTag = "Choppy"
             this.pattern.scatterVal = this.map(fxrand(), 0, 1, 0.2, 0.5)
         }
@@ -258,15 +258,15 @@ class Features {
         const s = fxrand();
         if (s < 0.08) {
             this.pattern.sizeTag = "Smaller"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 13, 17)
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 15, 19 )
         }
         else if (s < 0.83) {
             this.pattern.sizeTag = "Standard"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 22, 27)
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 25, 29 )
         } 
         else {
             this.pattern.sizeTag = "Larger"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 29, 34)
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 33, 37 )
         }
 
         //angles
@@ -310,45 +310,45 @@ class Features {
         const c = fxrand()
         if (c < 0.07) {
             this.lightsAndCamera.cameraTag = "Front"
-            this.lightsAndCamera.cameraVal = { x: 0, y: 20 }
+            this.lightsAndCamera.cameraVal = { x: 0, y: 5 }
         } 
         else if (c < 0.19) {
             this.lightsAndCamera.cameraTag = "Left"
-            this.lightsAndCamera.cameraVal = { x: -10, y: 20 }
+            this.lightsAndCamera.cameraVal = { x: -10, y: 5 }
         }
         else if (c < 0.33) {
             this.lightsAndCamera.cameraTag = "Right"
-            this.lightsAndCamera.cameraVal = { x: 10, y: 20 }
+            this.lightsAndCamera.cameraVal = { x: 10, y: 5 }
         }
         else if (c < 0.44) {
             this.lightsAndCamera.cameraTag = "Top"
-            this.lightsAndCamera.cameraVal = { x: 0, y: 25 }
+            this.lightsAndCamera.cameraVal = { x: 0, y: 10 }
         }
         else if (c < 0.59) {
             this.lightsAndCamera.cameraTag = "Top Left"
-            this.lightsAndCamera.cameraVal = { x: -10, y: 25 }
+            this.lightsAndCamera.cameraVal = { x: -10, y: 10 }
         }
         else if (c < 0.75) {
             this.lightsAndCamera.cameraTag = "Top Right"
-            this.lightsAndCamera.cameraVal = { x: 10, y: 25 }
+            this.lightsAndCamera.cameraVal = { x: 10, y: 10 }
         }
         else if (c < 0.82) {
             this.lightsAndCamera.cameraTag = "Bottom"
-            this.lightsAndCamera.cameraVal = { x: 0, y: 5 }
+            this.lightsAndCamera.cameraVal = { x: 0, y: -5 }
         }
         else if (c < 0.93) {
             this.lightsAndCamera.cameraTag = "Bottom Left"
-            this.lightsAndCamera.cameraVal = { x: -10, y: 5 }
+            this.lightsAndCamera.cameraVal = { x: -10, y: -5 }
         }
         else if (c <= 1.0) {
             this.lightsAndCamera.cameraTag = "Bottom Right"
-            this.lightsAndCamera.cameraVal = { x: 10, y: 5 }
+            this.lightsAndCamera.cameraVal = { x: 10, y: -5 }
         }
 
         const z = fxrand()
         if (z < 0.07) {
             this.lightsAndCamera.zoomTag = "In"
-            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 19, 23)
+            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 20, 25)
         } 
         else if (z < 0.79) {
             this.lightsAndCamera.zoomTag = "Out"

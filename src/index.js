@@ -11,6 +11,10 @@ import Skull from './SKULL.glb';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
+import { ClearPass } from 'three/examples/jsm/postprocessing/ClearPass.js';
+import { MaskPass, ClearMaskPass } from 'three/examples/jsm/postprocessing/MaskPass.js';
+import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
 
 
 //1) - generate fxhash features - global driving parameters
@@ -60,6 +64,7 @@ function init() {
   //scene & camera
   scene = new THREE.Scene();
   const sCol = new THREE.Color(feet.background.value.r/255, feet.background.value.g/255, feet.background.value.b/255);
+  //sCol.set
   scene.background = sCol;
   //scene.fog = new THREE.Fog(sCol, 5, 26)
 
@@ -76,14 +81,14 @@ function init() {
   renderer.shadowMap.enabled = true;
   renderer.domElement.id = "hashish";
   //renderer.domElement.style.backgroundColor = feet.background.value
-  document.body.style.backgroundColor = 'rgb(38,38,38)'
+  document.body.style.backgroundColor = 'rgb(5,5,5)'
   document.body.style.display = 'flex'
   document.body.style.justifyContent = 'center'
   document.body.style.alignItems = 'center'
   document.body.style.height = window.innerHeight.toString() + 'px'
 
   outerDiv = document.createElement('div')
-  outerDiv.style.backgroundColor = 'white'
+  outerDiv.style.backgroundColor = feet.background.value
   outerDiv.style.display = 'flex'
   outerDiv.style.justifyContent = 'center'
   outerDiv.style.boxShadow = '3px 3px 15px black'
@@ -99,7 +104,7 @@ function init() {
   //renderer in frame
   renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
   renderer.domElement.style.borderStyle = 'solid'
-  renderer.domElement.style.borderColor = 'rgb(150,150,150)'
+  renderer.domElement.style.borderColor = 'rgb(38,38,38)'
   renderer.domElement.style.borderWidth = '1px'
   innerDiv.appendChild( renderer.domElement )
   rendererDiv = renderer.domElement
@@ -112,7 +117,7 @@ function init() {
 
   // controls
   controls = new OrbitControls( camera, renderer.domElement );
-  controls.target = new THREE.Vector3(0, 11, 0)
+  controls.target = new THREE.Vector3(0, 1.5, 0)
   controls.enableDamping =true;
   controls.dampingFactor = 0.2;
   controls.autoRotateSpeed = 1.0;
@@ -218,14 +223,27 @@ function initPostprocessing() {
     disable: false
   };
   const halftonePass = new HalftonePass(sizer.w, sizer.h, params)
-  
 
-  const composer = new EffectComposer( renderer );
+  const maskPass = new MaskPass( scene, camera )
+  const clearMaskPass = new ClearMaskPass()
+  const outputPass = new ShaderPass ( CopyShader );
+
+  const parameters = {
+    stencilBuffer: true
+  };
+
+  const renderTarget = new THREE.WebGLRenderTarget( sizer.w, sizer.h, parameters );
+
+  const composer = new EffectComposer( renderer, renderTarget );
 
   //render
   composer.addPass(renderPass);
+  //mask
+  composer.addPass(maskPass)
   //halftone pass
   composer.addPass(halftonePass)
+  composer.addPass(clearMaskPass)
+  composer.addPass(outputPass)
 
   postprocessing.composer = composer;
 }
@@ -291,11 +309,11 @@ function animate() {
 
 function render() {
 
-  const seconds = performance.now() / 5555 ;
-  if (seconds > 1 && !firstAnimate && !controls.autoRotate) {
-    controls.autoRotate = true;
-    firstAnimate = true
-  }
+  // const seconds = performance.now() / 5555 ;
+  // if (seconds > 1 && !firstAnimate && !controls.autoRotate) {
+  //   controls.autoRotate = true;
+  //   firstAnimate = true
+  // }
 
 
   postprocessing.composer.render( scene, camera );
