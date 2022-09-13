@@ -246,7 +246,7 @@ class Features {
 
         //scatter
         const p = fxrand();
-        if (p < 0.13) {
+        if (p < 0.05) {
             this.pattern.scatterTag = "None"
             this.pattern.scatterVal = 0
         } 
@@ -263,28 +263,34 @@ class Features {
         const s = fxrand();
         if (s < 0.08) {
             this.pattern.sizeTag = "Smaller"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 15, 19 )
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 0.66, 0.88 )
         }
         else if (s < 0.83) {
             this.pattern.sizeTag = "Standard"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 25, 29 )
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 1.1, 1.62 )
         } 
         else {
             this.pattern.sizeTag = "Larger"
-            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 33, 37 )
+            this.pattern.sizeVal = this.map(fxrand(), 0, 1, 1.8, 2.2 )
         }
 
         //angles
         const a = fxrand();
+        const angle = this.map(fxrand(), 0, 1, Math.PI*0.2, Math.PI*0.8)
         if (a < 0.32) {
             this.pattern.anglesTag = "Grid"
             this.pattern.anglesVals.r = 0
             this.pattern.anglesVals.g = 0
             this.pattern.anglesVals.b = 0
-        } 
+        }
+        else if (a < 0.66) {
+            this.pattern.anglesTag = "Rotated Grid"
+            this.pattern.anglesVals.r = angle
+            this.pattern.anglesVals.g = angle
+            this.pattern.anglesVals.b = angle
+        }
         else if (a < 0.88) {
-            this.pattern.anglesTag = "Mirror"
-            const angle = this.map(fxrand(), 0, 1, 0, Math.PI/2)
+            this.pattern.anglesTag = "Mirrored"
             this.pattern.anglesVals.r = 0
             this.pattern.anglesVals.g = angle
             this.pattern.anglesVals.b = -angle

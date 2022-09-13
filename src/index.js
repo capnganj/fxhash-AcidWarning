@@ -30,8 +30,7 @@ window.$fxhashFeatures = {
   "Background": feet.background.tag,
   "Pattern" : feet.pattern.anglesTag,
   "Sunlight" : feet.lightsAndCamera.lightsTag,
-  "Camera Position": feet.lightsAndCamera.cameraTag,
-  "Camera Zoom" : feet.lightsAndCamera.zoomTag
+  "Camera Position": feet.lightsAndCamera.cameraTag
 };
 console.log(window.$fxhashFeatures);
 //console.log(feet);
@@ -56,7 +55,7 @@ let loaded = false;
 
 //global vars 
 let controls, renderer, scene, camera, skullObj
-let rendererDiv, outerDiv, innerDiv
+let outerDiv, innerDiv
 let postprocessing = {
   selectedObjects: []
 }
@@ -78,7 +77,7 @@ function init() {
   //renderer
   let w = computeCanvasSize()
   
-  renderer.setSize( w.w-(w.nearEdgeOffset*2), w.h-(w.nearEdgeOffset*2));
+  renderer.setSize( w.w, w.h);
   renderer.setPixelRatio( window.devicePixelRatio );
   renderer.shadowMap.enabled = true;
   renderer.domElement.id = "hashish";
@@ -93,23 +92,21 @@ function init() {
   outerDiv.style.backgroundColor = feet.background.value
   outerDiv.style.display = 'flex'
   outerDiv.style.justifyContent = 'center'
-  outerDiv.style.boxShadow = '3px 3px 15px black'
+  //outerDiv.style.boxShadow = '3px 3px 15px black'
   //outerDiv.style.alignItems = 'center'
-  outerDiv.style.height = w.w.toString() + 'px'
+  outerDiv.style.height = w.h.toString() + 'px'
+  outerDiv.style.width = w.w.toString() + 'px'
   document.body.appendChild(outerDiv)
-  outerDiv.id = "fxhashish"
 
   innerDiv = document.createElement('div')
-  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
   outerDiv.appendChild(innerDiv)
 
   //renderer in frame
-  //renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
+  //renderer.domElement.style.marginTop = w.nearEdgeOffset.toString() + 'px'
   //renderer.domElement.style.borderStyle = 'solid'
   //renderer.domElement.style.borderColor = feet.invertColor(feet.background.value)
   //renderer.domElement.style.borderWidth = '1px'
   innerDiv.appendChild( renderer.domElement )
-  rendererDiv = renderer.domElement
 
   //camera and orbit controls
   camera = new THREE.PerspectiveCamera( 60, w.w / (w.h), 0.01, 100 );
@@ -221,7 +218,7 @@ function initPostprocessing() {
   //halftone
   const params = {
     shape: 4, //acid hits are square!  saving circles and lines for other projects...
-    radius: feet.pattern.sizeVal,
+    radius: sizer.nearEdgeOffset * feet.pattern.sizeVal,
     rotateR: feet.pattern.anglesVals.r , // all could be features...
     rotateB: feet.pattern.anglesVals.g,
     rotateG: feet.pattern.anglesVals.b,
@@ -283,17 +280,17 @@ function computeCanvasSize() {
   //does the horizontal dimension drive, or vertical
   if ( ww/wh >= 1 ) {
     //window is wide - let height drive
-    ret.h = Math.round(wh - (smallEdgeSize * 2));
+    ret.h = Math.round(wh);
     ret.w = Math.round(ret.h * 1 );
   } else {
     //window is tall - let width drive
-    ret.w = Math.round(ww - (smallEdgeSize * 2));
+    ret.w = Math.round(ww);
     ret.h = Math.round(ret.w / 1 );
   }
 
-  smallEdgeSize = ret.w * 0.02
+  //smallEdgeSize = ret.w * 0.02
   
-  ret.topPadding = (wh/2) - (ret.h/2)
+  ret.topPadding = wh/2
   ret.nearEdgeOffset = smallEdgeSize
 
   return ret;
@@ -310,14 +307,15 @@ function onWindowResize() {
   camera.aspect = w.w / w.h;
   camera.updateProjectionMatrix();
   renderer.setPixelRatio( window.devicePixelRatio);
-  renderer.setSize( w.w-w.nearEdgeOffset, w.h-w.nearEdgeOffset);
-  //post processing passes updates
-  //postprocessing.halftonePass.uniforms['radius'].value 
+  renderer.setSize( w.w, w.h);
+  //post processing passes updates?
+  //postprocessing.halftonePass.uniforms['radius'].value = w.nearEdgeOffset * feet.pattern.sizeVal;
 
   //html updates
   document.body.style.height = window.innerHeight.toString() + 'px'
-  outerDiv.style.height = w.w.toString() + 'px'
-  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
+  outerDiv.style.height = w.h.toString() + 'px'
+  outerDiv.style.width = w.w.toString() + 'px'
+  //innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
   //renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
 
 }
@@ -345,7 +343,7 @@ function render() {
   if(previewed == false && loaded == true){
     fxpreview();
     previewed = true;
-    download();
+    //download();
   } 
 
 }
