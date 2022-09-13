@@ -163,6 +163,11 @@ class Features {
         return h.rgb();
     }
 
+    //return hex value of rgb color
+    getHex(col){
+        return col.formatHex()
+    }
+
     //set color palette globally
     setColorPalette() {
         let c = fxrand();
@@ -205,7 +210,7 @@ class Features {
 
     setBackground() {
         let b = fxrand();
-        if (b < 0.00) {
+        if (b < 0.11) {
             this.background.tag = "Rolling Paper";
             this.background.value = rgb(235, 213, 179);
         }
@@ -217,7 +222,7 @@ class Features {
             this.background.tag = "Newspaper";
             this.background.value = rgb(245, 242, 232);
         }
-        else if (b < 0.00) {
+        else if (b < 0.47) {
             this.background.tag = "Brown Paper Bag";
             this.background.value = rgb(181, 155, 124);
         }
@@ -308,11 +313,11 @@ class Features {
         }
 
         const c = fxrand()
-        if (c < 0.07) {
+        if (c < 0.01) {
             this.lightsAndCamera.cameraTag = "Front"
             this.lightsAndCamera.cameraVal = { x: 0, y: 5 }
         } 
-        else if (c < 0.19) {
+        else if (c < 0.16) {
             this.lightsAndCamera.cameraTag = "Left"
             this.lightsAndCamera.cameraVal = { x: -10, y: 5 }
         }
@@ -322,7 +327,7 @@ class Features {
         }
         else if (c < 0.44) {
             this.lightsAndCamera.cameraTag = "Top"
-            this.lightsAndCamera.cameraVal = { x: 0, y: 10 }
+            this.lightsAndCamera.cameraVal = { x: 0, y: 12 }
         }
         else if (c < 0.59) {
             this.lightsAndCamera.cameraTag = "Top Left"
@@ -345,19 +350,20 @@ class Features {
             this.lightsAndCamera.cameraVal = { x: 10, y: -5 }
         }
 
-        const z = fxrand()
-        if (z < 0.07) {
-            this.lightsAndCamera.zoomTag = "In"
-            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 20, 25)
-        } 
-        else if (z < 0.79) {
-            this.lightsAndCamera.zoomTag = "Out"
-            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 27, 32)
-        }
-        else {
-            this.lightsAndCamera.zoomTag = "Far Out"
-            this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 35, 39)
-        }
+        // const z = fxrand()
+        // if (z < 0.07) {
+        //     this.lightsAndCamera.zoomTag = "In"
+        //     this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 20, 25)
+        // } 
+        // else if (z < 0.79) {
+        //     this.lightsAndCamera.zoomTag = "Out"
+        //     this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 27, 32)
+        // }
+        // else {
+        //     this.lightsAndCamera.zoomTag = "Far Out"
+        //     this.lightsAndCamera.zoomVal = this.map(fxrand(), 0, 1, 35, 39)
+        // }
+
     }
 
 }

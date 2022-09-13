@@ -12,7 +12,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
 import { HalftonePass } from 'three/examples/jsm/postprocessing/HalftonePass';
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass';
-import { ClearPass } from 'three/examples/jsm/postprocessing/ClearPass.js';
+import { OutlinePass } from 'three/examples/jsm/postprocessing/OutlinePass';
 import { MaskPass, ClearMaskPass } from 'three/examples/jsm/postprocessing/MaskPass.js';
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader';
 
@@ -55,9 +55,11 @@ let loaded = false;
 
 
 //global vars 
-let controls, renderer, scene, camera, skullObj, firstAnimate
+let controls, renderer, scene, camera, skullObj
 let rendererDiv, outerDiv, innerDiv
-let postprocessing = {selectedObjects: []}
+let postprocessing = {
+  selectedObjects: []
+}
 init();
 
 function init() {
@@ -98,14 +100,14 @@ function init() {
   outerDiv.id = "fxhashish"
 
   innerDiv = document.createElement('div')
-  innerDiv.style.padding = (w.nearEdgeOffset*0.66).toString() + 'px'
+  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
   outerDiv.appendChild(innerDiv)
 
   //renderer in frame
-  renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
-  renderer.domElement.style.borderStyle = 'solid'
-  renderer.domElement.style.borderColor = 'rgb(38,38,38)'
-  renderer.domElement.style.borderWidth = '1px'
+  //renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
+  //renderer.domElement.style.borderStyle = 'solid'
+  //renderer.domElement.style.borderColor = feet.invertColor(feet.background.value)
+  //renderer.domElement.style.borderWidth = '1px'
   innerDiv.appendChild( renderer.domElement )
   rendererDiv = renderer.domElement
 
@@ -113,11 +115,19 @@ function init() {
   camera = new THREE.PerspectiveCamera( 60, w.w / (w.h), 0.01, 100 );
   //camera.aspect=w.w/w.h
   camera.updateProjectionMatrix()
-  camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, feet.lightsAndCamera.zoomVal );
+  camera.position.set( feet.lightsAndCamera.cameraVal.x, feet.lightsAndCamera.cameraVal.y, 32 );
 
   // controls
   controls = new OrbitControls( camera, renderer.domElement );
-  controls.target = new THREE.Vector3(0, 1.5, 0)
+  if (feet.lightsAndCamera.cameraTag.includes("Top")) {
+    controls.target = new THREE.Vector3(0, 0, 0)
+  } else if (feet.lightsAndCamera.cameraTag.includes("Bottom")) {
+    controls.target = new THREE.Vector3(0, 3, 0)
+  }
+  else {
+    controls.target = new THREE.Vector3(0, 1, 0)
+  }
+  
   controls.enableDamping =true;
   controls.dampingFactor = 0.2;
   controls.autoRotateSpeed = 1.0;
@@ -194,7 +204,6 @@ function init() {
   renderer.autoClear = false;
 
   //animation controls and state
-  firstAnimate = false;
   renderer.domElement.addEventListener( 'dblclick', toggleAutorotate);
 
 
@@ -224,6 +233,15 @@ function initPostprocessing() {
   };
   const halftonePass = new HalftonePass(sizer.w, sizer.h, params)
 
+  const outlinePass = new OutlinePass(new THREE.Vector2(sizer.w, sizer.h), scene, camera, postprocessing.selectedObjects)
+  outlinePass.edgeStrength = 10.0
+  outlinePass.edgeGlow = 0.33
+  outlinePass.edgeThickness = 3.0
+  outlinePass.selectedObjects = postprocessing.selectedObjects
+  const inv = feet.getHex(feet.invertColor(feet.background.value))
+  outlinePass.visibleEdgeColor.set(inv)
+  
+
   const maskPass = new MaskPass( scene, camera )
   const clearMaskPass = new ClearMaskPass()
   const outputPass = new ShaderPass ( CopyShader );
@@ -243,9 +261,11 @@ function initPostprocessing() {
   //halftone pass
   composer.addPass(halftonePass)
   composer.addPass(clearMaskPass)
+  composer.addPass(outlinePass)
   composer.addPass(outputPass)
 
   postprocessing.composer = composer;
+  postprocessing.halftonePass = halftonePass;
 }
 
 function computeCanvasSize() {
@@ -271,7 +291,7 @@ function computeCanvasSize() {
     ret.h = Math.round(ret.w / 1 );
   }
 
-  smallEdgeSize = ret.w * 0.05
+  smallEdgeSize = ret.w * 0.02
   
   ret.topPadding = (wh/2) - (ret.h/2)
   ret.nearEdgeOffset = smallEdgeSize
@@ -283,18 +303,22 @@ function computeCanvasSize() {
 // threejs animation stuff
 function onWindowResize() {
 
+  //snag size
   let w = computeCanvasSize();
 
-  camera.aspect = w.w / (w.h);
+  //update camera, renderer
+  camera.aspect = w.w / w.h;
   camera.updateProjectionMatrix();
   renderer.setPixelRatio( window.devicePixelRatio);
- 
+  renderer.setSize( w.w-w.nearEdgeOffset, w.h-w.nearEdgeOffset);
+  //post processing passes updates
+  //postprocessing.halftonePass.uniforms['radius'].value 
 
+  //html updates
   document.body.style.height = window.innerHeight.toString() + 'px'
-  renderer.setSize( w.w-(w.nearEdgeOffset*2), w.h-(w.nearEdgeOffset*2));
   outerDiv.style.height = w.w.toString() + 'px'
-  innerDiv.style.padding = (w.nearEdgeOffset*0.66).toString() + 'px'
-  renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
+  innerDiv.style.padding = w.nearEdgeOffset.toString() + 'px'
+  //renderer.domElement.style.padding = (w.nearEdgeOffset*0.33).toString() + 'px'
 
 }
 
