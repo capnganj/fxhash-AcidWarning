@@ -32,7 +32,7 @@ window.$fxhashFeatures = {
   "Sunlight" : feet.lightsAndCamera.lightsTag,
   "Camera Position": feet.lightsAndCamera.cameraTag
 };
-console.log(window.$fxhashFeatures);
+//console.log(window.$fxhashFeatures);
 //console.log(feet);
 
 //vars related to fxhash preview call
@@ -343,7 +343,7 @@ function render() {
   if(previewed == false && loaded == true){
     fxpreview();
     previewed = true;
-    //download();
+    download();
   } 
 
 }
